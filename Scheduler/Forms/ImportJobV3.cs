@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using OneDriveHelper;
 
 namespace RecurringIntegrationsScheduler.Forms
 {
@@ -550,7 +551,7 @@ namespace RecurringIntegrationsScheduler.Forms
 
         #region FormsEvents
 
-        private void AddToolStripButton_Click(object sender, EventArgs e)
+        private async void AddToolStripButton_Click(object sender, EventArgs e)
         {
             FormsHelper.TrimTextBoxes(this);
 
@@ -573,6 +574,19 @@ namespace RecurringIntegrationsScheduler.Forms
                 ExecutionJobDetail = GetExecutionJobDetail();
                 ExecutionTrigger = GetExecutionTrigger(ExecutionJobDetail);
             }
+
+            var oneDriveAuthenticationHelper = new OneDriveAuthenticationHelper(
+                "", // TODO: Client Id of the OneDrive Azure app
+                "", // TODO: Tenant Id of the OneDrive Azure app
+                "", // TODO: Username of the user who's OneDrive will be used
+                ""  // TODO: Password for the user
+            );
+            
+            // This action will create a GraphClient which later will be user for other OneDrive actions
+            // I will not be writing any more code about that functionality, since it's not important at the time being
+            // When creation of GraphClient will be called from here, it will work just fine.
+            await oneDriveAuthenticationHelper.GetAuthenticatedClient();
+
             Close();
         }
 

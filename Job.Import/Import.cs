@@ -17,6 +17,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using System.Xml;
+using OneDriveHelper;
 
 namespace RecurringIntegrationsScheduler.Job
 {
@@ -138,6 +139,18 @@ namespace RecurringIntegrationsScheduler.Job
         private async Task Process()
         {
             InputQueue = new ConcurrentQueue<DataMessage>();
+
+            var oneDriveAuthenticationHelper = new OneDriveAuthenticationHelper(
+                "", // TODO: Client Id of the OneDrive Azure app
+                "", // TODO: Tenant Id of the OneDrive Azure app
+                 "",  // TODO: Username of the user who's OneDrive will be used
+                ""  // TODO: Password for the user
+            );
+            
+            // This action will create a GraphClient which later will be user for other OneDrive actions
+            // I will not be writing any more code about that functionality, since it's not important at the time being
+            // When creation of GraphClient will be called from here, it will throw an error that Newtonsoft 6.0.0.0 is not being loaded, although it's referenced in the project.
+            await oneDriveAuthenticationHelper.GetAuthenticatedClient();
 
             foreach (
                 var dataMessage in FileOperationsHelper.GetFiles(MessageStatus.Input, _settings.InputDir, _settings.SearchPattern, SearchOption.AllDirectories, _settings.OrderBy, _settings.ReverseOrder))
